@@ -15,9 +15,10 @@ exports.up = function (knex) {
         .createTable('recipe_ingredients', (tbl) => {
             tbl.integer('recipe_id')
                 .references('recipe.id')
-            toolbar.integer('ingredient_id')
+            tbl.integer('ingredient_id')
                 .references('ingredients.id')
-                .tbl.primary(['recipe_id', 'ingredient_id'])
+            tbl.decimal('quantity')
+            tbl.primary(['recipe_id', 'ingredient_id'])
         })
 };
 
