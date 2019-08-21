@@ -13,6 +13,28 @@ router.get('/', async (req, res) => {
     }
 });
 
+router.get('/:id/instructions', async (req, res) => {
+    const { id } = req.params
+    try {
+        const instructions = await Recipes.getInstruction(id);
+        res.json(instructions);
+    } catch (err) {
+        res.status(500).json({ message: 'Failed to get recipes', err });
+    }
+});
+
+router.get('/:id/shopping_list', async (req, res) => {
+    const { id } = req.params
+    try {
+        const shoppingList = await Recipes.getShoppingList(id);
+        res.json(shoppingList);
+    } catch (err) {
+        res.status(500).json({ message: 'Failed to get shopping list', err });
+    }
+});
+
+
+
 router.get('/:id', async (req, res) => {
     const { id } = req.params;
 
@@ -31,12 +53,41 @@ router.get('/:id', async (req, res) => {
 
 router.post('/', async (req, res) => {
     const recipeData = req.body;
-
+    console.log(req.body);
     try {
         const recipe = await Recipes.add(recipeData);
         res.status(201).json(recipe);
     } catch (err) {
         res.status(500).json({ message: 'Failed to create new recipe', err });
+    }
+});
+
+router.post('/add_ingredients', async (req, res) => {
+    const recipeData = req.body;
+    const { recipe_id, ingredient_id } = req.body;
+    console.log(req.body, recipe_id, ingredient_id);
+    try {
+        const recipeIngredient = await Recipes.addIngredients(recipeData);
+        res.status(201).json(recipeIngredient);
+    } catch (err) {
+        res.status(500).json({ message: 'Failed to add ingredient', err });
+    }
+
+    // try {
+    //     const recipeIngredient = await Recipes.addIngredients(recipe_id, ingredient_id);
+    //     res.status(201).json(recipeIngredient);
+    // } catch (err) {
+    //     res.status(500).json({ message: 'Failed to add ingredient', err });
+    // }
+});
+
+router.get('/:id/recipe_ingredients', async (req, res) => {
+    const { recipeId } = req.params
+    try {
+        const recipeIngredient = await Recipes.getIngredients(recipeId);
+        res.status(201).json(recipeIngredient);
+    } catch (err) {
+        res.status(500).json({ message: `Failed to get ingredients for id: ${recipeId}`, err });
     }
 });
 
